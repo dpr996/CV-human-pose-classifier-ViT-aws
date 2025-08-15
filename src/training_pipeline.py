@@ -50,6 +50,7 @@ class TrainingPipeline(BasePipeline):
             id2label=id2label,
             label2id=label2id,
             enable_gpu=self.config.enable_gpu,
+            nb_layers_to_freeze=self.config.nb_layers_to_freeze,
         )
         _transforms, model, device = model_builder.initialize()
         model = model.to(device)
@@ -76,7 +77,7 @@ class TrainingPipeline(BasePipeline):
             learning_rate=1e-4,
             per_device_train_batch_size=16,
             per_device_eval_batch_size=16,
-            num_train_epochs=5,
+            num_train_epochs=3,
             load_best_model_at_end=True,
             metric_for_best_model=MetricsSchema.ACCURACY,
             greater_is_better=True,

@@ -1,9 +1,9 @@
 from torchvision.transforms import Compose, RandomResizedCrop, ToTensor, Normalize
 from transformers import AutoImageProcessor, AutoModelForImageClassification
-from torch.nn import Module
 from colorama import Fore, Style
 from typing import Optional
 import torch
+from torch import nn
 
 
 class ModelBuilder:
@@ -15,12 +15,14 @@ class ModelBuilder:
         id2label: dict[int, str],
         label2id: dict[str, int],
         enable_gpu: Optional[bool] = False,
+        nb_layers_to_freeze: Optional[int] = None,
     ):
         self.model_name = model_name
         self.num_labels = num_labels
         self.id2label = id2label
         self.label2id = label2id
         self.enable_gpu = enable_gpu
+        self.nb_layers_to_freeze = nb_layers_to_freeze
 
     def build_transforms(self) -> Compose:
         """Build image preprocessing transforms"""
@@ -40,7 +42,13 @@ class ModelBuilder:
         _transforms = Compose([RandomResizedCrop(size), ToTensor(), normalize])
         return _transforms
 
-    def build_model(self) -> Module:
+    def _print_trainable_parameters(self, model: nn.Module) -> None:
+        print(f"{Fore.CYAN}Trainable parameters:{Style.RESET_ALL}")
+        for name, param in model.named_parameters():
+            if param.requires_grad:
+                print(f" - {name}")
+
+    def build_model(self) -> nn.Module:
         """Load pretrained model"""
         model = AutoModelForImageClassification.from_pretrained(
             self.model_name,
@@ -49,6 +57,18 @@ class ModelBuilder:
             label2id=self.label2id,
         )
         print(f"{Fore.CYAN}Model loaded.{Style.RESET_ALL}")
+
+        if self.nb_layers_to_freeze is not None:
+            print(
+                f"{Fore.YELLOW}Freezing first {self.nb_layers_to_freeze} encoder layers...{Style.RESET_ALL}"
+            )
+            for name, param in model.vit.named_parameters():
+                for layer_idx in range(self.nb_layers_to_freeze):
+                    if name.startswith(f"encoder.layer.{layer_idx}."):
+                        param.requires_grad = False
+
+        # Print trainable parameters
+        self._print_trainable_parameters(model)
 
         return model
 
