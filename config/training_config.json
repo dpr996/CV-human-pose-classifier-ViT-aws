@@ -1,3 +1,5 @@
 {
-    "auto_image_processor_model": "google/vit-base-patch16-224-in21k"
+    "input_dir": "data",
+    "model_name": "google/vit-base-patch16-224-in21k",
+    "enable_gpu": true
 }

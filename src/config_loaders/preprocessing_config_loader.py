@@ -20,9 +20,7 @@ class PreprocessingConfig(BaseModel):
         lt=1,
         description="Proportion of data used for validation (must be strictly between 0 and 1)",
     )
-    output_dir: str = Field(
-        default="data", description="Directory to save train and test datasets"
-    )
+    output_dir: str = Field(default="data", description="Directory to save datasets")
 
 
 def load_preprocessing_config(config_path: str) -> PreprocessingConfig:

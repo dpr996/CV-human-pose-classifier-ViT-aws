@@ -1,10 +1,17 @@
 import json
 from pydantic import BaseModel, Field
+from typing import Optional
 
 
 class TrainingConfig(BaseModel):
-    auto_image_processor_model: str = Field(
-        ..., description="The model to use for image processing"
+    model_name: str = Field(
+        ..., description="The model to use for image classification"
+    )
+    input_dir: str = Field(
+        default="data", description="Directory to load train and validation datasets"
+    )
+    enable_gpu: Optional[bool] = Field(
+        default=False, description="Whether to use GPU if available"
     )
 
 
