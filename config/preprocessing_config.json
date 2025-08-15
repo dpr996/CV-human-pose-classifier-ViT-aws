@@ -1,0 +1,4 @@
+{
+    "huggingface_dataset_name": "Bingsu/Human_Action_Recognition",
+    "test_size": 0.2
+}

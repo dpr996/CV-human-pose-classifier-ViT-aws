@@ -1,0 +1,67 @@
+{
+  "builder_name": "parquet",
+  "citation": "",
+  "config_name": "default",
+  "dataset_name": "human_action_recognition",
+  "dataset_size": 327884278,
+  "description": "",
+  "download_checksums": {
+    "hf://datasets/Bingsu/Human_Action_Recognition@6c1a1284eb3557055d7c57b91cd7e68e3252b32c/data/train-00000-of-00001.parquet": {
+      "num_bytes": 229053743,
+      "checksum": null
+    },
+    "hf://datasets/Bingsu/Human_Action_Recognition@6c1a1284eb3557055d7c57b91cd7e68e3252b32c/data/test-00000-of-00001.parquet": {
+      "num_bytes": 98055831,
+      "checksum": null
+    }
+  },
+  "download_size": 327109574,
+  "features": {
+    "image": {
+      "_type": "Image"
+    },
+    "labels": {
+      "names": [
+        "calling",
+        "clapping",
+        "cycling",
+        "dancing",
+        "drinking",
+        "eating",
+        "fighting",
+        "hugging",
+        "laughing",
+        "listening_to_music",
+        "running",
+        "sitting",
+        "sleeping",
+        "texting",
+        "using_laptop"
+      ],
+      "_type": "ClassLabel"
+    }
+  },
+  "homepage": "https://www.kaggle.com/datasets/meetnagadia/human-action-recognition-har-dataset",
+  "license": "odbl-1.0",
+  "size_in_bytes": 654993852,
+  "splits": {
+    "train": {
+      "name": "train",
+      "num_bytes": 229588921,
+      "num_examples": 12600,
+      "dataset_name": "human_action_recognition"
+    },
+    "test": {
+      "name": "test",
+      "num_bytes": 98295357,
+      "num_examples": 5400,
+      "dataset_name": "human_action_recognition"
+    }
+  },
+  "version": {
+    "version_str": "0.0.0",
+    "major": 0,
+    "minor": 0,
+    "patch": 0
+  }
+}
