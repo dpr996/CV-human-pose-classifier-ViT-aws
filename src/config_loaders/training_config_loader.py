@@ -12,6 +12,8 @@ class TrainingConfig(BaseModel):
     )
     nb_layers_to_freeze: Optional[int] = Field(
         default=None,
+        ge=0,
+        le=12,
         description="Number of initial ViT encoder layers to freeze (1-12).",
     )
     enable_gpu: Optional[bool] = Field(
