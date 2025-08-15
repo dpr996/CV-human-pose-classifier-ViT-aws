@@ -4,6 +4,7 @@ from typing import Optional
 
 
 class TrainingConfig(BaseModel):
+    # [LOW]: Split config to model_config, train_config and directories_config
     model_name: str = Field(
         ..., description="The model to use for image classification"
     )

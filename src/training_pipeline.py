@@ -67,6 +67,7 @@ class TrainingPipeline(BasePipeline):
         val_dataset = val_dataset.with_transform(apply_transforms)
 
         # Training arguments
+        # [MEDIUM]: add training params in config
         args = TrainingArguments(
             output_dir=self.config.train_dir,
             overwrite_output_dir=True,
@@ -77,7 +78,7 @@ class TrainingPipeline(BasePipeline):
             learning_rate=1e-4,
             per_device_train_batch_size=16,
             per_device_eval_batch_size=16,
-            num_train_epochs=3,
+            num_train_epochs=10,
             load_best_model_at_end=True,
             metric_for_best_model=MetricsSchema.ACCURACY,
             greater_is_better=True,
@@ -92,7 +93,7 @@ class TrainingPipeline(BasePipeline):
             compute_metrics=compute_accuracy,
         )
 
-        # Run training lopp
+        # Run training loop
         if self.config.clean_train_dir_before_training:
             clean_checkpoints(train_dir=self.config.train_dir)
 
