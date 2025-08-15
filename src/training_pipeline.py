@@ -76,7 +76,7 @@ class TrainingPipeline(BasePipeline):
             learning_rate=2e-5,
             per_device_train_batch_size=16,
             per_device_eval_batch_size=16,
-            num_train_epochs=5,
+            num_train_epochs=2,
             load_best_model_at_end=True,
             metric_for_best_model=MetricsSchema.ACCURACY,
             greater_is_better=True,
