@@ -10,6 +10,10 @@ class TrainingConfig(BaseModel):
     input_dir: str = Field(
         default="data", description="Directory to load train and validation datasets"
     )
+    nb_layers_to_freeze: Optional[int] = Field(
+        default=None,
+        description="Number of initial ViT encoder layers to freeze (1-12).",
+    )
     enable_gpu: Optional[bool] = Field(
         default=False, description="Whether to use GPU if available"
     )
