@@ -13,6 +13,17 @@ class TrainingConfig(BaseModel):
     enable_gpu: Optional[bool] = Field(
         default=False, description="Whether to use GPU if available"
     )
+    clean_train_dir_before_training: bool = Field(
+        default=True,
+        description="Whether to clean the training directory before training",
+    )
+    train_dir: str = Field(..., description="Directory to save the training files")
+    training_curve_path: str = Field(
+        ..., description="Path to save the loss and metrics curves after training"
+    )
+    best_model_path: str = Field(
+        ..., description="Path to save the best model during training"
+    )
 
 
 def load_training_config(config_path: str) -> TrainingConfig:

@@ -1,5 +1,9 @@
 {
     "input_dir": "data",
     "model_name": "google/vit-base-patch16-224-in21k",
-    "enable_gpu": true
+    "enable_gpu": true,
+    "clean_train_dir_before_training": true,
+    "train_dir": "train_dir",
+    "training_curve_path": "figs/training_validation_curves.png",
+    "best_model_path": "trained_models/best_model"
 }

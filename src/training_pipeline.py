@@ -3,8 +3,13 @@ from src.base_pipeline import BasePipeline
 from colorama import Fore, Style
 from datasets import load_from_disk
 from src.modeling.model_builder import ModelBuilder
-from torchvision.transforms import Compose
-from src.utils.schema import BatchSchema
+from transformers import TrainingArguments, Trainer
+from src.utils.schema import BatchSchema, MetricsSchema
+from src.evaluators.accuracy import compute_accuracy
+from src.utils.utils_toolbox import (
+    clean_checkpoints,
+    plot_training_and_validation_curves,
+)
 
 
 class TrainingPipeline(BasePipeline):
@@ -47,10 +52,11 @@ class TrainingPipeline(BasePipeline):
             enable_gpu=self.config.enable_gpu,
         )
         _transforms, model, device = model_builder.initialize()
+        model = model.to(device)
 
         # Image preprocessing
         def apply_transforms(batch: dict) -> dict:
-            batch[BatchSchema.IMAGE_PROCESSED] = [
+            batch[BatchSchema.INPUTS] = [
                 _transforms(img.convert("RGB")) for img in batch["image"]
             ]
             del batch["image"]
@@ -58,5 +64,56 @@ class TrainingPipeline(BasePipeline):
 
         train_dataset = train_dataset.with_transform(apply_transforms)
         val_dataset = val_dataset.with_transform(apply_transforms)
+
+        # Training arguments
+        args = TrainingArguments(
+            output_dir=self.config.train_dir,
+            overwrite_output_dir=True,
+            remove_unused_columns=False,
+            eval_strategy="epoch",
+            logging_strategy="epoch",
+            save_strategy="epoch",
+            learning_rate=2e-5,
+            per_device_train_batch_size=16,
+            per_device_eval_batch_size=16,
+            num_train_epochs=5,
+            load_best_model_at_end=True,
+            metric_for_best_model=MetricsSchema.ACCURACY,
+            greater_is_better=True,
+        )
+
+        # Trainer
+        trainer = Trainer(
+            model=model,
+            args=args,
+            train_dataset=train_dataset,
+            eval_dataset=val_dataset,
+            compute_metrics=compute_accuracy,
+        )
+
+        # Run training lopp
+        if self.config.clean_train_dir_before_training:
+            clean_checkpoints(train_dir=self.config.train_dir)
+
+        trainer.train()
+
+        # Save the training and validation curves (loss and accuracy)
+        training_logs = trainer.state.log_history
+        train_losses = [log["loss"] for log in training_logs if "loss" in log]
+        val_losses = [log["eval_loss"] for log in training_logs if "eval_loss" in log]
+        val_accuracies = [
+            log[f"eval_{MetricsSchema.ACCURACY}"]
+            for log in training_logs
+            if f"eval_{MetricsSchema.ACCURACY}" in log
+        ]
+        plot_training_and_validation_curves(
+            train_losses=train_losses,
+            val_losses=val_losses,
+            val_metrics=val_accuracies,
+            save_path=self.config.training_curve_path,
+        )
+
+        # Save the best model for Testing and Inference
+        trainer.save_model(self.config.best_model_path)
 
         print(f"{Fore.GREEN}Training pipeline completed successfully!{Style.RESET_ALL}")

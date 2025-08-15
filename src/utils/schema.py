@@ -1,2 +1,6 @@
 class BatchSchema:
-    IMAGE_PROCESSED = "image_processed"
+    INPUTS = "inputs"
+
+
+class MetricsSchema:
+    ACCURACY = "accuracy"

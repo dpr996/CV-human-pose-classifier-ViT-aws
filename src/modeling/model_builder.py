@@ -40,11 +40,6 @@ class ModelBuilder:
         _transforms = Compose([RandomResizedCrop(size), ToTensor(), normalize])
         return _transforms
 
-    # def transforms(self, batch: dict) -> dict:
-    #     batch['image_processed'] = [self._transforms(img.convert('RGB')) for img in batch['image']]
-    #     del batch['image'] # delete original image for memory optimization
-    #     return batch
-
     def build_model(self) -> Module:
         """Load pretrained model"""
         model = AutoModelForImageClassification.from_pretrained(
