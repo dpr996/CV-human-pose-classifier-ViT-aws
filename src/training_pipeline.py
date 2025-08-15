@@ -56,7 +56,7 @@ class TrainingPipeline(BasePipeline):
 
         # Image preprocessing
         def apply_transforms(batch: dict) -> dict:
-            batch[BatchSchema.INPUTS] = [
+            batch[BatchSchema.PIXEL_VALUES] = [
                 _transforms(img.convert("RGB")) for img in batch["image"]
             ]
             del batch["image"]

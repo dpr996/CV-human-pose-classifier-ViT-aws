@@ -1,5 +1,5 @@
 class BatchSchema:
-    INPUTS = "inputs"
+    PIXEL_VALUES = "pixel_values"
 
 
 class MetricsSchema:
