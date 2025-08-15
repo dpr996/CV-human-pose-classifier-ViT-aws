@@ -1,5 +1,3 @@
 {
-    "image_processing_config":{
-        "auto_image_processor_model": "google/vit-base-patch16-224-in21k"
-    }
+    "auto_image_processor_model": "google/vit-base-patch16-224-in21k"
 }
