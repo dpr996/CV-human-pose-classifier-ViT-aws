@@ -1,7 +1,7 @@
 {
     "input_dir": "data",
     "model_name": "google/vit-base-patch16-224-in21k",
-    "nb_layers_to_freeze": 12,
+    "nb_layers_to_freeze": 4,
     "enable_gpu": true,
     "clean_train_dir_before_training": true,
     "train_dir": "train_dir",
