@@ -17,6 +17,9 @@ class TrainingConfig(BaseModel):
         le=12,
         description="Number of initial ViT encoder layers to freeze (1-12).",
     )
+    dropout_rate: Optional[float] = Field(
+        None, ge=0.0, le=1.0, description="Dropout rate to prevent overfitting"
+    )
     enable_gpu: Optional[bool] = Field(
         default=False, description="Whether to use GPU if available"
     )

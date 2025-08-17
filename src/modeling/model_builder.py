@@ -1,5 +1,5 @@
 from torchvision.transforms import Compose, RandomResizedCrop, ToTensor, Normalize
-from transformers import AutoImageProcessor, AutoModelForImageClassification
+from transformers import AutoImageProcessor, AutoModelForImageClassification, AutoConfig
 from colorama import Fore, Style
 from typing import Optional
 import torch
@@ -16,6 +16,7 @@ class ModelBuilder:
         label2id: dict[str, int],
         enable_gpu: Optional[bool] = False,
         nb_layers_to_freeze: Optional[int] = None,
+        dropout_rate: Optional[float] = None,
     ):
         self.model_name = model_name
         self.num_labels = num_labels
@@ -23,6 +24,7 @@ class ModelBuilder:
         self.label2id = label2id
         self.enable_gpu = enable_gpu
         self.nb_layers_to_freeze = nb_layers_to_freeze
+        self.dropout_rate = dropout_rate
 
     def build_transforms(self) -> Compose:
         """Build image preprocessing transforms"""
@@ -50,14 +52,31 @@ class ModelBuilder:
 
     def build_model(self) -> nn.Module:
         """Load pretrained model"""
-        model = AutoModelForImageClassification.from_pretrained(
+
+        config = AutoConfig.from_pretrained(
             self.model_name,
             num_labels=self.num_labels,
             id2label=self.id2label,
             label2id=self.label2id,
         )
+
+        # Control Dropout rate if specified
+        if self.dropout_rate is not None:
+            config.hidden_dropout_prob = self.dropout_rate
+            config.attention_probs_dropout_prob = self.dropout_rate
+            print(
+                f"{Fore.CYAN}Dropout rate set to {self.dropout_rate}.{Style.RESET_ALL}"
+            )
+        else:
+            print(f"{Fore.CYAN}No dropout rate specified.{Style.RESET_ALL}")
+
+        model = AutoModelForImageClassification.from_pretrained(
+            self.model_name,
+            config=config,
+        )
         print(f"{Fore.CYAN}Model loaded.{Style.RESET_ALL}")
 
+        # Freeze first layers if specified
         if self.nb_layers_to_freeze is not None:
             print(
                 f"{Fore.YELLOW}Freezing first {self.nb_layers_to_freeze} encoder layers...{Style.RESET_ALL}"
