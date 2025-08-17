@@ -51,7 +51,6 @@ class TrainingPipeline(BasePipeline):
             label2id=label2id,
             enable_gpu=self.config.enable_gpu,
             nb_layers_to_freeze=self.config.nb_layers_to_freeze,
-            dropout_rate=self.config.dropout_rate,
         )
         _transforms, model, device = model_builder.initialize()
         model = model.to(device)
