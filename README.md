@@ -1,1 +1,1 @@
-# CV-human-pose-classifier-ViT-aws
+# Human Pose Classifier using Visual Transformers (ViT) (Under Construction)

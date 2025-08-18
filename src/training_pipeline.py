@@ -45,12 +45,12 @@ class TrainingPipeline(BasePipeline):
         # Build the model
         print(f"{Fore.YELLOW}Creating Model...{Style.RESET_ALL}")
         model_builder = ModelBuilder(
-            model_name=self.config.model_config.model_name,
+            model_name=self.config.model_params.model_name,
             num_labels=len(train_labels),
             id2label=id2label,
             label2id=label2id,
             enable_gpu=self.config.training_config.enable_gpu,
-            nb_layers_to_freeze=self.config.model_config.nb_layers_to_freeze,
+            nb_layers_to_freeze=self.config.model_params.nb_layers_to_freeze,
         )
         _transforms, model, device = model_builder.initialize()
         model = model.to(device)

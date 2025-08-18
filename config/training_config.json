@@ -6,15 +6,15 @@
         "training_curve_path": "figs/training_validation_curves.png",
         "best_model_path": "trained_models/best_model"
     },
-    "model_config": {
+    "model_params": {
         "model_name": "google/vit-base-patch16-224-in21k",
-        "nb_layers_to_freeze": 4
+        "nb_layers_to_freeze": 11
     },
     "training_config": {
         "enable_gpu": true,
         "learning_rate": 1e-4,
         "batch_size": 16,
-        "num_train_epochs": 20
+        "num_train_epochs": 2
     }
 
 }

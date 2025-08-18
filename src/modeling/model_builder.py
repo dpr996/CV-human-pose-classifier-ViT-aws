@@ -78,6 +78,7 @@ class ModelBuilder:
             device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         else:
             device = torch.device("cpu")
+        print(f"{Fore.CYAN}Using device: {device}{Style.RESET_ALL}")
         return device
 
     def initialize(self):

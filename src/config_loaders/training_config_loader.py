@@ -45,7 +45,7 @@ class TrainingHyperparams(BaseModel):
 
 class TrainingConfig(BaseModel):
     directories_config: DirectoriesConfig
-    model_config: ModelConfig
+    model_params: ModelConfig
     training_config: TrainingHyperparams
 
 
