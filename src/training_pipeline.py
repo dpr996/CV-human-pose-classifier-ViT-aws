@@ -22,7 +22,7 @@ class TrainingPipeline(BasePipeline):
 
         # Load train and validation sets
         print(f"{Fore.YELLOW}Loading data from specified paths...{Style.RESET_ALL}")
-        input_dir = self.config.input_dir
+        input_dir = self.config.directories_config.input_dir
         try:
             train_dataset = load_from_disk(f"{input_dir}/train")
             val_dataset = load_from_disk(f"{input_dir}/val")
@@ -45,12 +45,12 @@ class TrainingPipeline(BasePipeline):
         # Build the model
         print(f"{Fore.YELLOW}Creating Model...{Style.RESET_ALL}")
         model_builder = ModelBuilder(
-            model_name=self.config.model_name,
+            model_name=self.config.model_config.model_name,
             num_labels=len(train_labels),
             id2label=id2label,
             label2id=label2id,
-            enable_gpu=self.config.enable_gpu,
-            nb_layers_to_freeze=self.config.nb_layers_to_freeze,
+            enable_gpu=self.config.training_config.enable_gpu,
+            nb_layers_to_freeze=self.config.model_config.nb_layers_to_freeze,
         )
         _transforms, model, device = model_builder.initialize()
         model = model.to(device)
@@ -67,18 +67,17 @@ class TrainingPipeline(BasePipeline):
         val_dataset = val_dataset.with_transform(apply_transforms)
 
         # Training arguments
-        # [MEDIUM]: add training params in config
         args = TrainingArguments(
-            output_dir=self.config.train_dir,
+            output_dir=self.config.directories_config.train_dir,
             overwrite_output_dir=True,
             remove_unused_columns=False,
             eval_strategy="epoch",
             logging_strategy="epoch",
             save_strategy="epoch",
-            learning_rate=1e-4,
-            per_device_train_batch_size=16,
-            per_device_eval_batch_size=16,
-            num_train_epochs=20,
+            learning_rate=self.config.training_config.learning_rate,
+            per_device_train_batch_size=self.config.training_config.batch_size,
+            per_device_eval_batch_size=self.config.training_config.batch_size,
+            num_train_epochs=self.config.training_config.num_train_epochs,
             load_best_model_at_end=True,
             metric_for_best_model=MetricsSchema.ACCURACY,
             greater_is_better=True,
@@ -94,8 +93,8 @@ class TrainingPipeline(BasePipeline):
         )
 
         # Run training loop
-        if self.config.clean_train_dir_before_training:
-            clean_checkpoints(train_dir=self.config.train_dir)
+        if self.config.directories_config.clean_train_dir_before_training:
+            clean_checkpoints(train_dir=self.config.directories_config.train_dir)
 
         trainer.train()
 
@@ -112,10 +111,10 @@ class TrainingPipeline(BasePipeline):
             train_losses=train_losses,
             val_losses=val_losses,
             val_metrics=val_accuracies,
-            save_path=self.config.training_curve_path,
+            save_path=self.config.directories_config.training_curve_path,
         )
 
         # Save the best model for Testing and Inference
-        trainer.save_model(self.config.best_model_path)
+        trainer.save_model(self.config.directories_config.best_model_path)
 
         print(f"{Fore.GREEN}Training pipeline completed successfully!{Style.RESET_ALL}")

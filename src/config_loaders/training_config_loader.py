@@ -3,24 +3,11 @@ from pydantic import BaseModel, Field
 from typing import Optional
 
 
-class TrainingConfig(BaseModel):
-    # [LOW]: Split config to model_config, train_config and directories_config
-    model_name: str = Field(
-        ..., description="The model to use for image classification"
-    )
+class DirectoriesConfig(BaseModel):
     input_dir: str = Field(
         default="data", description="Directory to load train and validation datasets"
     )
-    nb_layers_to_freeze: Optional[int] = Field(
-        default=None,
-        ge=0,
-        le=12,
-        description="Number of initial ViT encoder layers to freeze (1-12).",
-    )
-    enable_gpu: Optional[bool] = Field(
-        default=False, description="Whether to use GPU if available"
-    )
-    clean_train_dir_before_training: bool = Field(
+    clean_train_dir_before_training: Optional[bool] = Field(
         default=True,
         description="Whether to clean the training directory before training",
     )
@@ -31,6 +18,35 @@ class TrainingConfig(BaseModel):
     best_model_path: str = Field(
         ..., description="Path to save the best model during training"
     )
+
+
+class ModelConfig(BaseModel):
+    model_name: str = Field(
+        ..., description="The model to use for image classification"
+    )
+    nb_layers_to_freeze: Optional[int] = Field(
+        default=None,
+        ge=0,
+        le=12,
+        description="Number of initial ViT encoder layers to freeze (1-12).",
+    )
+
+
+class TrainingHyperparams(BaseModel):
+    enable_gpu: Optional[bool] = Field(
+        default=False, description="Whether to use GPU if available"
+    )
+    learning_rate: float = Field(
+        default=1e-4, description="Learning rate for the optimizer"
+    )
+    batch_size: int = Field(default=16, description="Batch size for training")
+    num_train_epochs: int = Field(default=10, description="Number of training epochs")
+
+
+class TrainingConfig(BaseModel):
+    directories_config: DirectoriesConfig
+    model_config: ModelConfig
+    training_config: TrainingHyperparams
 
 
 def load_training_config(config_path: str) -> TrainingConfig:
