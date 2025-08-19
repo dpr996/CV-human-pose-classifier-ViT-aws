@@ -4,7 +4,7 @@ from colorama import Fore, Style
 from datasets import load_from_disk
 from src.modeling.model_builder import ModelBuilder
 from transformers import TrainingArguments, Trainer
-from src.utils.schema import BatchSchema, MetricsSchema
+from src.utils.schema import BatchSchema, MetricSchema
 from src.evaluators.accuracy import compute_accuracy
 from src.utils.utils_toolbox import (
     clean_checkpoints,
@@ -79,7 +79,7 @@ class TrainingPipeline(BasePipeline):
             per_device_eval_batch_size=self.config.training_config.batch_size,
             num_train_epochs=self.config.training_config.num_train_epochs,
             load_best_model_at_end=True,
-            metric_for_best_model=MetricsSchema.ACCURACY,
+            metric_for_best_model=MetricSchema.ACCURACY,
             greater_is_better=True,
         )
 

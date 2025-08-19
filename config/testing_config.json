@@ -1,0 +1,15 @@
+{
+    "input_dir": "data/test",
+    "trained_model_path": "trained_models/best_model_10_6",
+    "model_name": "google/vit-base-patch16-224-in21k",
+    "metrics_output_file": "data/output/performance_metrics.csv",
+    "push_model_s3": {
+        "enabled": true,
+        "conditions": [
+            {"metric": "accuracy", "threshold": 0.80},
+            {"metric": "precision", "threshold": 0.90}
+        ],
+        "bucket_name": "human-pose-classifier-bucket",
+        "prefix": "ml_models/"
+    }
+}

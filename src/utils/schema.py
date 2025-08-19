@@ -2,5 +2,5 @@ class BatchSchema:
     PIXEL_VALUES = "pixel_values"
 
 
-class MetricsSchema:
+class MetricSchema:
     ACCURACY = "accuracy"

@@ -7,16 +7,19 @@ from src.preprocessing_pipeline import PreprocessingPipeline
 from src.config_loaders.training_config_loader import load_training_config
 from src.training_pipeline import TrainingPipeline
 
+from src.config_loaders.testing_config_loader import testing_config_loader
+from src.testing_pipeline import TestingPipeline
+
 if __name__ == "__main__":
 
     # Parse command-line argument to determine which mode to run
     parser = argparse.ArgumentParser(description="Human Pose Classifier")
     parser.add_argument(
         "mode",
-        choices=["preprocess_data", "train"],
+        choices=["preprocess_data", "train", "test"],
         default="preprocess_data",
         nargs="?",
-        help="Choose mode: preprocess_data or train",
+        help="Choose mode: preprocess_data, train or test",
     )
     args = parser.parse_args()
 
@@ -38,5 +41,11 @@ if __name__ == "__main__":
         training_pipeline = TrainingPipeline(config=training_config)
         training_pipeline.run()
 
+    elif args.mode == "test":
+        # Load testing config and run testing pipeline
+        testing_config = testing_config_loader(config_path="config/testing_config.json")
+        testing_pipeline = TestingPipeline(config=testing_config)
+        testing_pipeline.run()
+
     else:
-        print("Invalid mode. Please choose 'preprocess_data' or 'train'.")
+        print("Invalid mode. Please choose 'preprocess_data', 'train' or 'test'.")
