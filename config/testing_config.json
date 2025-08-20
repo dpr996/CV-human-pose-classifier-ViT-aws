@@ -1,6 +1,6 @@
 {
     "input_dir": "data/test",
-    "trained_model_path": "trained_models/best_model_10_6",
+    "trained_model_path": "trained_models/best_model",
     "model_name": "google/vit-base-patch16-224-in21k",
     "metrics_output_file": "data/output/performance_metrics.csv",
     "push_model_s3": {

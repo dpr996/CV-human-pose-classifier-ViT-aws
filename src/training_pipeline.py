@@ -10,6 +10,8 @@ from src.utils.utils_toolbox import (
     clean_checkpoints,
     plot_training_and_validation_curves,
 )
+import pickle
+import os
 
 
 class TrainingPipeline(BasePipeline):
@@ -103,9 +105,9 @@ class TrainingPipeline(BasePipeline):
         train_losses = [log["loss"] for log in training_logs if "loss" in log]
         val_losses = [log["eval_loss"] for log in training_logs if "eval_loss" in log]
         val_accuracies = [
-            log[f"eval_{MetricsSchema.ACCURACY}"]
+            log[f"eval_{MetricSchema.ACCURACY}"]
             for log in training_logs
-            if f"eval_{MetricsSchema.ACCURACY}" in log
+            if f"eval_{MetricSchema.ACCURACY}" in log
         ]
         plot_training_and_validation_curves(
             train_losses=train_losses,
@@ -114,7 +116,12 @@ class TrainingPipeline(BasePipeline):
             save_path=self.config.directories_config.training_curve_path,
         )
 
-        # Save the best model for Testing and Inference
+        # Save the best model and _transforms for Testing and Inference
         trainer.save_model(self.config.directories_config.best_model_path)
+        transforms_path = os.path.join(
+            self.config.directories_config.best_model_path, "transforms.pkl"
+        )
+        with open(transforms_path, "wb") as f:
+            pickle.dump(_transforms, f)
 
         print(f"{Fore.GREEN}Training pipeline completed successfully!{Style.RESET_ALL}")

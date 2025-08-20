@@ -8,7 +8,7 @@
     },
     "model_params": {
         "model_name": "google/vit-base-patch16-224-in21k",
-        "nb_layers_to_freeze": 11
+        "nb_layers_to_freeze": 6
     },
     "training_config": {
         "enable_gpu": true,
